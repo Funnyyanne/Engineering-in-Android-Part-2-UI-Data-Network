@@ -10,50 +10,21 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Brightness4
+import androidx.compose.material.icons.filled.Brightness7
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import coil.compose.AsyncImage
-import com.epam.test.minimalistnotes.network.Quote
-import androidx.compose.material.icons.filled.Brightness4
-import androidx.compose.material.icons.filled.Brightness7
-import androidx.compose.material.icons.filled.ViewList
-import androidx.compose.ui.tooling.preview.Preview
-import java.text.SimpleDateFormat
-import java.util.*
-
-private val DarkColorScheme = darkColorScheme(
-    primary = Color(0xFF3DDC84),
-    onPrimary = Color.Black,
-    background = Color(0xFF121212),
-    surface = Color(0xFF1E1E1E),
-    onSurface = Color.White,
-    surfaceVariant = Color(0xFF252526),
-    onSurfaceVariant = Color(0xFFD4D4D4),
-    error = Color(0xFFCF6679)
-)
-
-private val LightColorScheme = lightColorScheme(
-    primary = Color(0xFF3DDC84),
-    onPrimary = Color.White,
-    background = Color(0xFFF5F5F5),
-    surface = Color.White,
-    onSurface = Color.Black,
-    surfaceVariant = Color(0xFFFFFFFF),
-    onSurfaceVariant = Color(0xFF5F6368),
-    error = Color(0xFFB00020)
-)
+import com.epam.test.minimalistnotes.ui.components.AddNoteDialog
+import com.epam.test.minimalistnotes.ui.components.NoteItem
+import com.epam.test.minimalistnotes.ui.components.QuoteCard
+import com.epam.test.minimalistnotes.ui.theme.MinimalistNotesTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,11 +34,14 @@ class MainActivity : ComponentActivity() {
         setContent {
             var isDarkTheme by remember { mutableStateOf(true) } // Default to dark
 
-            MaterialTheme(
-                colorScheme = if (isDarkTheme) DarkColorScheme else LightColorScheme
+            // 使用提取出的 Theme 组件
+            MinimalistNotesTheme(
+                darkTheme = isDarkTheme
             ) {
-
-                MinimalistNotesApp(isDarkTheme = isDarkTheme, onThemeToggle = {isDarkTheme = !isDarkTheme})
+                MinimalistNotesApp(
+                    isDarkTheme = isDarkTheme,
+                    onThemeToggle = { isDarkTheme = !isDarkTheme }
+                )
             }
         }
     }
@@ -75,9 +49,11 @@ class MainActivity : ComponentActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MinimalistNotesApp(viewModel: NotesViewModel = viewModel()
-                       , isDarkTheme: Boolean,
-                       onThemeToggle: () -> Unit) {
+fun MinimalistNotesApp(
+    viewModel: NotesViewModel = viewModel(),
+    isDarkTheme: Boolean,
+    onThemeToggle: () -> Unit
+) {
     // 收集 ViewModel 中的 StateFlow 数据
     val notes by viewModel.allNotes.collectAsState()
     val quote by viewModel.quote.collectAsState()
@@ -103,19 +79,8 @@ fun MinimalistNotesApp(viewModel: NotesViewModel = viewModel()
                         context.startActivity(intent)
                     }) {
                         Icon(
-                            imageVector = Icons.Default.Add, // Using Add icon as a placeholder for news
+                            imageVector = Icons.Default.Add,
                             contentDescription = "BBC News",
-                            tint = MaterialTheme.colorScheme.onSurface
-                        )
-                    }
-                    IconButton(onClick = {
-                        // Navigate to Design activity
-                        val intent = Intent(context, DesignActivity::class.java)
-                        context.startActivity(intent)
-                    }) {
-                        Icon(
-                            imageVector = Icons.Default.ViewList, // Using ViewList icon for design
-                            contentDescription = "Design",
                             tint = MaterialTheme.colorScheme.onSurface
                         )
                     }
@@ -193,139 +158,5 @@ fun MinimalistNotesApp(viewModel: NotesViewModel = viewModel()
                 showDialog = false
             }
         )
-    }
-}
-
-// 单个笔记卡片组件 (课程 2.2: Column, Row, Text)
-@Composable
-fun NoteItem(note: Note, onDelete: () -> Unit) {
-    Card(
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = note.title,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = note.content,
-                    fontSize = 16.sp,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    maxLines = 3
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = SimpleDateFormat(
-                        "MMM dd, HH:mm",
-                        Locale.getDefault()
-                    ).format(Date(note.timestamp)),
-                    fontSize = 12.sp,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-            IconButton(onClick = onDelete) {
-                Icon(Icons.Default.Delete, contentDescription = "Delete", tint  = MaterialTheme.colorScheme.error)
-            }
-        }
-    }
-}
-
-// 添加笔记的输入框对话框
-@Composable
-fun AddNoteDialog(onDismiss: () -> Unit, onConfirm: (String, String) -> Unit) {
-    var title by remember { mutableStateOf("") }
-    var content by remember { mutableStateOf("") }
-
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text("New Note") },
-        text = {
-            Column {
-                OutlinedTextField(
-                    value = title,
-                    onValueChange = { title = it },
-                    label = { Text("Title") },
-                    singleLine = true
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                OutlinedTextField(
-                    value = content,
-                    onValueChange = { content = it },
-                    label = { Text("Content") },
-                    modifier = Modifier.height(100.dp)
-                )
-            }
-        },
-        confirmButton = {
-            TextButton(
-                onClick = {
-                    if (title.isNotBlank() && content.isNotBlank()) {
-                        onConfirm(title, content)
-                    }
-                }
-            ) {
-                Text("Save")
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismiss) {
-                Text("Cancel")
-            }
-        }
-    )
-}
-
-
-@Preview
-@Composable
-fun QuoteCardPreview(){
-    QuoteCard(Quote("Keep coding!", "Developer"))
-}
-@Composable
-fun QuoteCard(quote: Quote) {
-    Card(
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Column {
-            AsyncImage(
-                model = "https://picsum.photos/seed/${quote.content.hashCode()}/800/400",
-                contentDescription = "Random Landscape",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(180.dp),
-                contentScale = ContentScale.Crop
-            )
-
-            // 名言内容
-            Column(modifier = Modifier.padding(16.dp)) {
-                Text(
-                    text = "“${quote.content}”",
-                    fontStyle = FontStyle.Italic,
-                    fontSize = 18.sp,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = "- ${quote.author}",
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.align(Alignment.End)
-                )
-            }
-        }
     }
 }

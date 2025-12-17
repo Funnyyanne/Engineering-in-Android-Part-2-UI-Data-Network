@@ -28,7 +28,7 @@
             android:label="BBC News"
             android:theme="@style/Theme.MiniContact" />
         <activity
-            android:name="com.epam.test.minimalistnotes.DesignActivity"
+            android:name="com.epam.test.minimalistnotes.QwenDesignActivity"
             android:exported="false"
             android:label="Design"
             android:theme="@style/Theme.MiniContact" />

@@ -4,33 +4,24 @@ package com.epam.test.minimalistnotes
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import java.util.*
 
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.*
-import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
 import androidx.compose.material.icons.filled.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -43,104 +34,8 @@ data class DesignItem(
     val timestamp: Long = Date().time
 )
 
-//class DesignActivity : ComponentActivity() {
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//        setContent {
-//            DesignScreen()
-//        }
-//    }
-//}
-//
-//@OptIn(ExperimentalMaterial3Api::class)
-//@Composable
-//fun DesignScreen() {
-//    // Sample data for the design screen
-//    val designItems = listOf(
-//        DesignItem(1, "Clean Layout", "Simple and uncluttered interface", "UI"),
-//        DesignItem(2, "Material Design", "Following Material Design guidelines", "UI"),
-//        DesignItem(3, "Dark Theme", "Support for dark mode", "Theme"),
-//        DesignItem(4, "Responsive Design", "Adapts to different screen sizes", "Layout"),
-//        DesignItem(5, "Smooth Animations", "Fluid transitions between screens", "UX")
-//    )
-//
-//    Scaffold(
-//        topBar = {
-//            TopAppBar(
-//                title = { Text("Design Elements") },
-//                navigationIcon = {
-//                    val activity = LocalActivity.current
-//                    IconButton(onClick = { activity?.finish() }) {
-//                        Icon(
-//                            imageVector = Icons.Default.ArrowBack,
-//                            contentDescription = "Back"
-//                        )
-//                    }
-//                },
-//                colors = TopAppBarDefaults.topAppBarColors(
-//                    containerColor = MaterialTheme.colorScheme.primary,
-//                    titleContentColor = MaterialTheme.colorScheme.onPrimary
-//                )
-//            )
-//        }
-//    ) { innerPadding ->
-//        LazyColumn(
-//            modifier = Modifier
-//                .fillMaxSize()
-//                .padding(innerPadding),
-//            contentPadding = PaddingValues(16.dp),
-//            verticalArrangement = Arrangement.spacedBy(12.dp)
-//        ) {
-//            items(designItems) { item ->
-//                DesignItemCard(item = item)
-//            }
-//        }
-//    }
-//}
-//
-//@Composable
-//fun DesignItemCard(item: DesignItem) {
-//    Card(
-//        colors = CardDefaults.cardColors(
-//            containerColor = MaterialTheme.colorScheme.surfaceVariant
-//        ),
-//        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-//        modifier = Modifier.fillMaxWidth()
-//    ) {
-//        Column(
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .padding(16.dp)
-//        ) {
-//            Row(
-//                modifier = Modifier.fillMaxWidth(),
-//                horizontalArrangement = Arrangement.SpaceBetween
-//            ) {
-//                Text(
-//                    text = item.title,
-//                    style = MaterialTheme.typography.headlineSmall,
-//                    color = MaterialTheme.colorScheme.onSurface
-//                )
-//                Badge(
-//                    containerColor = MaterialTheme.colorScheme.primary,
-//                    contentColor = MaterialTheme.colorScheme.onPrimary
-//                ) {
-//                    Text(text = item.category)
-//                }
-//            }
-//
-//            Spacer(modifier = Modifier.height(8.dp))
-//
-//            Text(
-//                text = item.description,
-//                style = MaterialTheme.typography.bodyMedium,
-//                color = MaterialTheme.colorScheme.onSurfaceVariant
-//            )
-//        }
-//    }
-//}
 
-class DesignActivity : ComponentActivity() {
+class QwenDesignActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
